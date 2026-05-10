@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-multipart
+
+# JPKI 検証ロジック (jpki_signer.crypto / container) の依存
+cryptography>=42.0
+asn1crypto>=1.5
+
+# JPKI 署名ロジック (jpki_signer.jpki) の依存 — PC/SC でカード通信
+pyscard>=2.0

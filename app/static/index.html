@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPKI Web - 電子署名 / 検証</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>JPKI Web</h1>
+    <p class="subtitle">
+      マイナンバーカードによる画像の電子署名 / 検証ツール
+      （ローカル運用専用）
+    </p>
+  </header>
+
+  <main class="container">
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-target="tab-verify" role="tab">
+        🔍 検証 (Verify)
+      </button>
+      <button class="tab" data-target="tab-sign" role="tab">
+        ✍️ 署名 (Sign)
+      </button>
+    </nav>
+
+    <!-- ============================================== -->
+    <!-- 検証タブ -->
+    <!-- ============================================== -->
+    <section id="tab-verify" class="tab-panel active">
+      <div class="card">
+        <h2>1. .jpkiimg ファイルを選択</h2>
+        <form id="verify-form">
+          <label class="file-input">
+            <input
+              id="verify-file"
+              type="file"
+              name="file"
+              accept=".jpkiimg,.zip,application/zip"
+              required
+            />
+            <span class="file-input__label">
+              クリックしてファイルを選択（<code>.jpkiimg</code>）
+            </span>
+          </label>
+          <p id="verify-file-info" class="file-info"></p>
+
+          <button id="verify-submit" type="submit" class="primary-btn">
+            署名を検証する
+          </button>
+        </form>
+      </div>
+
+      <div id="verify-result-card" class="card result hidden">
+        <h2>2. 検証結果</h2>
+        <div id="verify-status" class="status"></div>
+        <h3 class="subhead">詳細</h3>
+        <div id="verify-details"></div>
+        <details class="raw">
+          <summary>生 JSON を表示</summary>
+          <pre id="verify-json" class="result-json"></pre>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 署名タブ -->
+    <!-- ============================================== -->
+    <section id="tab-sign" class="tab-panel">
+      <div class="card warning-card">
+        <strong>⚠️ ローカル運用専用</strong>
+        <p>
+          署名処理は本サーバが動いている PC に接続された IC カードリーダーを
+          直接操作します。<br />
+          <strong>このアプリは必ず自分自身のローカルマシン (127.0.0.1)
+          で起動してください。</strong>
+          リモートサーバーにデプロイした場合、PIN がネットワーク越しに
+          送信されてしまうため絶対に避けてください。
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>1. 画像 + PIN を入力</h2>
+        <form id="sign-form" autocomplete="off">
+          <label class="file-input">
+            <input
+              id="sign-file"
+              type="file"
+              name="file"
+              accept="image/png,image/jpeg"
+              required
+            />
+            <span class="file-input__label">
+              署名する画像を選択（PNG / JPEG）
+            </span>
+          </label>
+          <p id="sign-file-info" class="file-info"></p>
+
+          <label class="pin-input">
+            <span class="pin-input__label">署名用 PIN（6〜16 桁）</span>
+            <input
+              id="sign-pin"
+              type="password"
+              name="pin"
+              inputmode="numeric"
+              autocomplete="off"
+              minlength="6"
+              maxlength="16"
+              required
+            />
+          </label>
+          <p class="hint">
+            ※ PINを<strong>5回連続で間違えるとマイナンバーカードがロックされます</strong>。
+            本ツールは安全のためサーバ内で 3 回失敗で自動停止します。
+          </p>
+
+          <button id="sign-submit" type="submit" class="primary-btn">
+            ✍️ 署名して .jpkiimg を生成
+          </button>
+        </form>
+      </div>
+
+      <div id="sign-result-card" class="card result hidden">
+        <h2>2. 署名結果</h2>
+        <div id="sign-status" class="status"></div>
+        <div id="sign-details"></div>
+        <div id="sign-download-area" class="hidden">
+          <a id="sign-download-link" class="primary-btn download-btn"
+             download href="#">
+            ⬇️ .jpkiimg をダウンロード
+          </a>
+        </div>
+        <details class="raw">
+          <summary>応答ヘッダ / エラー詳細を表示</summary>
+          <pre id="sign-json" class="result-json"></pre>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>
+      JPKI Web Prototype &copy; 2026 ／
+      ローカル運用専用 (127.0.0.1)
+    </small>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
